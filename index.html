@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Plano Financeiro — Bodas de Bolo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500;6..96,600&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#F1F5F9; --surface:#FFFFFF; --surface-2:#E3EBF4;
+  --ink:#1B2A3D; --ink-2:#55657A; --line:#D3DEEA;
+  --rose:#2D5F93; --rose-soft:#DCE8F5;
+  --sage:#5F7F66; --sage-soft:#DDE9DF;
+  --gold:#9C7A35; --gold-soft:#F1E7D1;
+  --danger:#B23A3A; --danger-soft:#F6DEDE;
+  --tier-1:#1F4E7F; --tier-2:#3C74AE; --tier-3:#86AED6; --tier-4:#C2D6EC; --tier-5:#2793B5;
+  --display:"Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
+  --body:"Figtree", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121A24; --surface:#1A2431; --surface-2:#243142;
+    --ink:#E7EEF6; --ink-2:#A6B5C7; --line:#324256;
+    --rose:#7EB3E8; --rose-soft:#1E3550;
+    --sage:#9CC2A4; --sage-soft:#22332A;
+    --gold:#D8B76E; --gold-soft:#3A3020;
+    --danger:#F08A8A; --danger-soft:#3E2222;
+    --tier-1:#7EB3E8; --tier-2:#5791CC; --tier-3:#3B70A6; --tier-4:#2A527C; --tier-5:#5CC4DE;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121A24; --surface:#1A2431; --surface-2:#243142;
+  --ink:#E7EEF6; --ink-2:#A6B5C7; --line:#324256;
+  --rose:#7EB3E8; --rose-soft:#1E3550;
+  --sage:#9CC2A4; --sage-soft:#22332A;
+  --gold:#D8B76E; --gold-soft:#3A3020;
+  --danger:#F08A8A; --danger-soft:#3E2222;
+  --tier-1:#7EB3E8; --tier-2:#5791CC; --tier-3:#3B70A6; --tier-4:#2A527C; --tier-5:#5CC4DE;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 64px)}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+img,svg,canvas{max-width:100%}
+a{color:var(--rose)}
+:focus-visible{outline:2px solid var(--rose);outline-offset:3px;border-radius:4px}
+.num{font-variant-numeric:tabular-nums lining-nums}
+
+/* Nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav-in{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:20px;padding:12px 24px}
+.brand{font-family:var(--display);font-size:1.25rem;font-weight:500;white-space:nowrap;color:var(--ink);text-decoration:none}
+.nav-links{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;flex:1}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-links a{color:var(--ink-2);text-decoration:none;font-size:.88rem;font-weight:500;padding:6px 10px;border-radius:999px;white-space:nowrap}
+.nav-links a:hover{background:var(--surface-2);color:var(--ink)}
+.theme-btn{background:none;border:1px solid var(--line);color:var(--ink);border-radius:999px;width:36px;height:36px;cursor:pointer;font-size:1rem;flex-shrink:0}
+
+main{max-width:1180px;margin:0 auto;padding:0 24px 80px}
+section{padding:72px 0 0}
+.sec-head{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;margin-bottom:32px;max-width:720px}
+h1,h2,h3{font-family:var(--display);font-weight:500;letter-spacing:-.01em;margin:0}
+h2{font-size:clamp(1.9rem,3.6vw,2.6rem);line-height:1.1}
+h3{font-size:1.3rem;line-height:1.2}
+.lede{color:var(--ink-2);font-size:1.05rem;margin:0;max-width:66ch}
+p{margin:0 0 1em;max-width:70ch}
+
+/* Hero */
+.hero{display:grid;grid-template-columns:1.05fr 1fr;gap:56px;align-items:end;padding:64px 0 24px}
+.hero h1{font-size:clamp(2.6rem,6vw,4.6rem);line-height:1.02;font-weight:400}
+.hero-sub{font-size:1.12rem;color:var(--ink-2);margin:24px 0 32px;max-width:52ch}
+.hero-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border-top:1px solid var(--line)}
+.hero-facts div{padding:16px 16px 0 0}
+.hero-facts dt{font-size:.85rem;color:var(--ink-2)}
+.hero-facts dd{margin:4px 0 0;font-family:var(--display);font-size:1.6rem}
+
+.cake{display:flex;flex-direction:column;align-items:center;gap:0}
+.cake-caption{font-size:.9rem;color:var(--ink-2);text-align:center;margin-top:14px}
+.tier{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 18px;color:#fff;border-radius:10px 10px 4px 4px;transform-origin:bottom center;animation:rise .7s cubic-bezier(.2,.8,.2,1) both}
+.tier span{font-size:.86rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tier b{font-family:var(--display);font-weight:500;font-size:1.05rem;white-space:nowrap}
+.tier.light{color:var(--ink)}
+.cake-plate{width:108%;height:10px;border-radius:50%;background:var(--line);margin-top:2px}
+.cake-total{font-family:var(--display);font-size:2.8rem;line-height:1;margin-bottom:14px}
+.cake-total small{display:block;font-family:var(--body);font-size:.85rem;color:var(--ink-2);margin-top:6px;text-align:center}
+@keyframes rise{from{opacity:0;transform:scaleY(.2) translateY(20px)}to{opacity:1;transform:none}}
+
+/* Panels */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:28px}
+.grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.grid-4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.chart-box{position:relative;height:320px}
+.chart-box.tall{height:380px}
+
+/* Tables */
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:.94rem}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line)}
+th{font-weight:600;color:var(--ink-2);font-size:.85rem}
+td.r,th.r{text-align:right}
+tr.total td{font-weight:700;border-bottom:none;border-top:2px solid var(--ink)}
+tr.flag td{color:var(--danger);font-style:italic}
+.bar-cell{width:30%;min-width:90px}
+.mini-bar{height:8px;border-radius:4px;background:var(--rose-soft);overflow:hidden}
+.mini-bar i{display:block;height:100%;background:var(--rose);border-radius:4px}
+
+/* Alerts */
+.alerts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.alert{border-left:4px solid var(--gold);background:var(--gold-soft);padding:20px 22px;border-radius:4px 14px 14px 4px}
+.alert.danger{border-color:var(--danger);background:var(--danger-soft)}
+.alert.ok{border-color:var(--sage);background:var(--sage-soft)}
+.alert h3{font-family:var(--body);font-size:1rem;font-weight:700;margin-bottom:6px}
+.alert p{margin:0;font-size:.93rem}
+
+/* Lines of product */
+.line-card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:24px;display:flex;flex-direction:column;gap:10px}
+.line-card .range{font-family:var(--display);font-size:1.5rem}
+.line-card p{font-size:.93rem;color:var(--ink-2);margin:0}
+.complexity{display:flex;gap:4px;margin-top:auto;padding-top:8px}
+.complexity i{width:100%;height:6px;border-radius:3px;background:var(--surface-2)}
+.complexity i.on{background:var(--rose)}
+.complexity-label{font-size:.8rem;color:var(--ink-2)}
+
+/* DRE */
+.dre{font-size:1rem}
+.dre-row{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid var(--line)}
+.dre-row.minus{color:var(--ink-2)}
+.dre-row.sub{font-weight:600}
+.dre-row.result{border-bottom:none;border-top:2px solid var(--ink);font-family:var(--display);font-size:1.5rem;padding-top:16px}
+.dre-row.result .v{color:var(--sage)}
+
+/* Scenarios */
+.scen{border-radius:18px;padding:24px;border:1px solid var(--line);background:var(--surface)}
+.scen .tag{display:inline-block;font-size:.8rem;font-weight:600;padding:3px 10px;border-radius:999px;margin-bottom:12px}
+.scen .big{font-family:var(--display);font-size:2rem;line-height:1.1}
+.scen dl{display:grid;grid-template-columns:auto auto;gap:6px 12px;margin:16px 0 0;font-size:.92rem}
+.scen dt{color:var(--ink-2)}
+.scen dd{margin:0;text-align:right;font-weight:600}
+.neg{color:var(--danger)}
+.pos{color:var(--sage)}
+
+/* Simulator */
+.sim{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:24px}
+.field{display:grid;gap:6px;margin-bottom:18px}
+.field label{display:flex;justify-content:space-between;font-size:.92rem;font-weight:600}
+.field label output{font-weight:700;color:var(--rose)}
+input[type=range]{width:100%;accent-color:var(--rose)}
+input[type=number]{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit;font-variant-numeric:tabular-nums}
+.inputs-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px}
+.out-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:20px}
+.out{background:var(--surface-2);border-radius:14px;padding:16px}
+.out span{display:block;font-size:.83rem;color:var(--ink-2)}
+.out strong{font-family:var(--display);font-size:1.55rem;font-weight:500;display:block;margin-top:2px}
+.verdict{border-radius:14px;padding:16px 18px;font-size:.95rem;font-weight:500}
+.btn{border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:.88rem;font-weight:600;padding:8px 14px;border-radius:999px;cursor:pointer}
+.btn:hover{background:var(--surface-2)}
+.btn-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+
+/* Timeline */
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;position:relative}
+.step{padding:0 20px 0 0}
+.step .dot{width:44px;height:44px;border-radius:50%;background:var(--rose);color:#fff;display:grid;place-items:center;font-family:var(--display);font-size:1.15rem;margin-bottom:14px}
+.step .pct{font-family:var(--display);font-size:2.2rem;line-height:1}
+.step p{color:var(--ink-2);font-size:.93rem;margin:6px 0 0}
+.paybar{display:flex;height:16px;border-radius:8px;overflow:hidden;margin:28px 0 8px}
+.paybar i:nth-child(1){background:var(--tier-1);flex:40}
+.paybar i:nth-child(2){background:var(--tier-3);flex:40}
+.paybar i:nth-child(3){background:var(--tier-5);flex:20}
+
+.process{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;counter-reset:p}
+.process li{counter-increment:p;padding:18px;border-radius:14px;background:var(--surface);border:1px solid var(--line);font-size:.93rem}
+.process li::before{content:counter(p);display:block;font-family:var(--display);font-size:1.5rem;color:var(--rose);margin-bottom:6px}
+.process b{display:block;margin-bottom:4px}
+
+.kpi-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border-top:1px solid var(--line)}
+.kpi-list div{padding:18px 18px 18px 0;border-bottom:1px solid var(--line)}
+.kpi-list b{display:block;margin-bottom:4px}
+.kpi-list span{font-size:.9rem;color:var(--ink-2)}
+.kpi-list code{font-family:var(--body);font-size:.85rem;background:var(--surface-2);padding:2px 8px;border-radius:6px;display:inline-block;margin-top:6px}
+
+.years{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.year{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:24px}
+.year h3{margin-bottom:12px}
+.year ul{margin:0;padding-left:18px;font-size:.93rem;color:var(--ink-2)}
+.year li{margin-bottom:6px}
+
+.market{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.mk{padding:24px 0;border-top:2px solid var(--ink)}
+.mk strong{font-family:var(--display);font-size:2.3rem;font-weight:400;display:block;line-height:1.1}
+.mk span{font-size:.92rem;color:var(--ink-2)}
+
+.note{font-size:.85rem;color:var(--ink-2);margin-top:14px}
+footer{max-width:1180px;margin:0 auto;padding:40px 24px 56px;border-top:1px solid var(--line);font-size:.86rem;color:var(--ink-2)}
+
+@media (max-width:960px){
+  .hero{grid-template-columns:1fr;gap:40px;padding-top:40px}
+  .grid-2,.sim,.alerts,.grid-3,.years,.market{grid-template-columns:1fr}
+  .grid-4,.process{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .kpi-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:560px){
+  main{padding:0 16px 64px}
+  .nav-in{padding:10px 16px;gap:12px}
+  .panel{padding:20px}
+  .grid-4,.process,.kpi-list,.inputs-grid,.out-grid{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr;gap:24px}
+  .hero-facts dd{font-size:1.25rem}
+  .tier span{font-size:.75rem}
+  section{padding-top:56px}
+}
+.logo-svg{width:34px;height:34px;flex-shrink:0}
+.brand{display:flex;align-items:center;gap:10px}
+.about{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:24px}
+.logo-panel{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px}
+.logo-panel svg{width:min(240px,70%);height:auto}
+.stack{display:grid;gap:16px}
+.mvv .panel h3{margin-bottom:10px}
+.mvv .feature{background:var(--rose);color:#fff;border-color:var(--rose)}
+.mvv .feature p{color:#fff}
+.mvv ul{margin:0;padding-left:18px}
+.mvv li{margin-bottom:6px}
+.persona dl{display:grid;gap:8px;margin:14px 0 0}
+.persona dt{font-size:.82rem;font-weight:700;color:var(--rose)}
+.persona dd{margin:0;font-size:.94rem}
+.swot{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.swot > div{border-radius:18px;padding:24px}
+.swot .s1,.swot .s4{background:var(--rose);color:#fff}
+.swot .s2,.swot .s3{background:var(--rose-soft)}
+.swot ul{margin:10px 0 0;padding-left:18px}
+.swot li{margin-bottom:4px}
+.position-quote{font-family:var(--display);font-style:italic;font-size:1.4rem;line-height:1.3;color:var(--gold);margin:12px 0}
+.org{display:flex;flex-direction:column;align-items:center;gap:0;overflow-x:auto;padding-bottom:8px}
+.org-node{border-radius:12px;padding:12px 16px;text-align:center;font-weight:600;font-size:.92rem;min-width:180px}
+.org-node small{display:block;font-weight:400;font-size:.8rem;opacity:.85}
+.org-top{background:var(--ink);color:var(--bg)}
+.org-vline{width:2px;height:22px;background:var(--rose)}
+.org-row{display:grid;grid-template-columns:repeat(4,minmax(190px,1fr));gap:16px;width:100%;min-width:820px;position:relative;padding-top:22px}
+.org-row::before{content:"";position:absolute;top:0;left:12.5%;right:12.5%;height:2px;background:var(--rose)}
+.org-col{display:flex;flex-direction:column;align-items:center;position:relative}
+.org-col::before{content:"";position:absolute;top:-22px;left:50%;width:2px;height:22px;background:var(--rose)}
+.org-area{background:var(--rose);color:#fff;width:100%}
+.org-sub{background:var(--rose-soft);color:var(--ink);width:88%}
+.growth{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:20px}
+.growth div{background:var(--surface-2);border-radius:14px;padding:16px}
+.growth b{font-family:var(--display);font-size:1.6rem;font-weight:500;display:block}
+.year-res{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.icon-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.icon-row .panel h3{margin-bottom:8px}
+.icon-row .panel p{margin:0;color:var(--ink-2)}
+.goal{display:flex;gap:28px;flex-wrap:wrap;margin-top:20px}
+.goal div strong{font-family:var(--display);font-size:2.2rem;font-weight:500;display:block;line-height:1}
+.goal div span{font-size:.9rem;color:var(--ink-2)}
+@media (max-width:960px){.about,.swot,.icon-row,.year-res,.growth{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Seções">
+  <div class="nav-in">
+    <a class="brand" href="#topo">Bodas de Bolo</a>
+    <div class="nav-links"><a href="#investimento">Investimento</a><a href="#custos">Custos</a><a href="#preco">Preço</a><a href="#projecao">Projeção</a><a href="#simulador">Simulador</a><a href="#projeto">Calculadora</a><a href="#caixa">Caixa</a></div>
+    <button class="theme-btn" id="themeBtn" aria-label="Alternar tema claro/escuro">◐</button>
+  </div>
+</nav>
+
+<main id="topo">
+
+<header class="hero">
+  <div>
+    <h1>Plano financeiro do ateliê da Bodas de Bolo</h1>
+    <p class="hero-sub">Custos iniciais, fontes de receita e projeção de lucro do ateliê de bolos de casamento artísticos e esculturais.</p>
+    <dl class="hero-facts">
+      <div><dt>Investimento inicial</dt><dd class="num">R$ 175 mil</dd></div>
+      <div><dt>Lucro no ano 3</dt><dd class="num">R$ 157 mil</dd></div>
+      <div><dt>Retorno</dt><dd class="num">28 meses</dd></div>
+    </dl>
+  </div>
+  <figure class="cake" aria-label="Faturamento mensal no ano 3 por linha de produto, desenhado como um bolo de andares">
+    <div class="cake-total num">R$ 87.000<small>faturamento mensal no ano 3, com 22 pedidos</small></div>
+    <div id="cakeTiers" style="width:100%;display:flex;flex-direction:column;align-items:center"></div>
+    <div class="cake-plate"></div>
+    <figcaption class="cake-caption">Cada andar é uma linha de produto, com largura proporcional ao faturamento.</figcaption>
+  </figure>
+</header>
+
+<!-- INVESTIMENTO -->
+<section id="investimento">
+  <div class="sec-head">
+    <h2>Investimento inicial</h2>
+    <p class="lede">R$ 175.000, vindos do capital próprio das sócias. O capital de giro cobre 3 meses de custos fixos do ano 1, porque o casamento é fechado meses antes e os gastos chegam perto da festa.</p>
+  </div>
+  <div class="grid-2">
+    <div class="panel">
+      <div class="table-wrap"><table id="tblInvest"><thead><tr><th>Item</th><th class="r">Valor</th><th class="bar-cell">Peso</th></tr></thead><tbody></tbody></table></div>
+    </div>
+    <div class="panel">
+      <h3 style="margin-bottom:6px">Para onde vai o dinheiro</h3>
+      <p class="note" style="margin-top:0">Agrupado por natureza do gasto.</p>
+      <div class="chart-box tall"><canvas id="chInvest"></canvas></div>
+    </div>
+  </div>
+</section>
+
+<!-- CUSTOS -->
+<section id="custos">
+  <div class="sec-head">
+    <h2>Custos fixos, variáveis e impostos</h2>
+    <p class="lede">Os custos fixos crescem junto com a equipe. Os variáveis são 35% de cada venda e os impostos do Simples Nacional ficam entre 6% e 7% do faturamento.</p>
+  </div>
+  <div class="panel">
+    <h3 style="margin-bottom:16px">Custos fixos mensais por ano</h3>
+    <div class="table-wrap"><table id="tblFixos" class="num"><thead><tr><th>Despesa</th><th class="r">Ano 1</th><th class="r">Ano 2</th><th class="r">Ano 3</th></tr></thead><tbody></tbody></table></div>
+    <p class="note">Equipe inclui pró-labore da diretora, salários e encargos trabalhistas.</p>
+  </div>
+  <div class="grid-2" style="margin-top:24px">
+    <div class="panel">
+      <h3 style="margin-bottom:16px">Composição dos custos fixos no ano 3</h3>
+      <div class="chart-box tall"><canvas id="chFixos"></canvas></div>
+    </div>
+    <div class="panel">
+      <h3 style="margin-bottom:16px">Referência de custos variáveis</h3>
+      <div class="table-wrap" style="max-height:380px;overflow-y:auto"><table id="tblVar"><thead><tr><th>Item</th><th>Unidade</th><th class="r">Faixa</th></tr></thead><tbody></tbody></table></div>
+    </div>
+  </div>
+</section>
+
+<!-- PREÇO -->
+<section id="preco">
+  <div class="sec-head">
+    <h2>Formação de preço</h2>
+    <p class="lede">O preço não sai do peso do bolo. Ele cobre custos variáveis, impostos e uma parcela dos custos fixos, que inclui a equipe, e ainda deixa lucro.</p>
+  </div>
+  <div class="grid-2">
+    <div class="panel">
+      <h3 style="margin-bottom:4px">Exemplo: bolo vendido por R$ 4.500</h3>
+      <p class="note" style="margin-top:0">Composição do preço de venda no ano 3.</p>
+      <div class="chart-box"><canvas id="chPreco"></canvas></div>
+    </div>
+    <div class="panel">
+      <div class="table-wrap"><table id="tblPreco"><thead><tr><th>Componente</th><th class="r">Valor</th><th class="r">% do preço</th></tr></thead><tbody></tbody></table></div>
+      <p class="note">A parcela dos custos fixos é R$ 37.350 dividido por 22 pedidos. A mão de obra está dentro dela, por isso não aparece de novo.</p>
+    </div>
+  </div>
+  <h3 style="margin:40px 0 18px">Linhas de produto</h3>
+  <div class="grid-4" id="lines"></div>
+  <p class="note">Serviços complementares: topos de bolo, flores comestíveis, entrega e montagem, e bolos para 15 anos, bodas e eventos corporativos.</p>
+</section>
+
+<!-- PROJEÇÃO -->
+<section id="projecao">
+  <div class="sec-head">
+    <h2>Projeção de lucro</h2>
+    <p class="lede">Projeção simples e hipotética. O ano 1 é de construção do portfólio, com equipe pequena; o lucro cresce conforme os pedidos aumentam.</p>
+  </div>
+  <div class="year-res" id="yearCards"></div>
+  <div class="grid-2" style="margin-top:24px">
+    <div class="panel">
+      <h3 style="margin-bottom:12px">Resultado de um mês no ano 3</h3>
+      <div class="dre num">
+        <div class="dre-row sub"><span>Faturamento</span><span>R$ 87.000</span></div>
+        <div class="dre-row minus"><span>(−) Impostos (7%)</span><span>R$ 6.090</span></div>
+        <div class="dre-row minus"><span>(−) Custos variáveis (35%)</span><span>R$ 30.450</span></div>
+        <div class="dre-row sub"><span>Margem de contribuição (58%)</span><span>R$ 50.460</span></div>
+        <div class="dre-row minus"><span>(−) Custos fixos</span><span>R$ 37.350</span></div>
+        <div class="dre-row result"><span>Lucro líquido</span><span class="v">R$ 13.110</span></div>
+      </div>
+      <p class="note">Margem de lucro de 15%. Ponto de equilíbrio: R$ 64.400 por mês, cerca de 17 pedidos.</p>
+      <div class="chart-box" style="height:220px;margin-top:12px"><canvas id="chWater"></canvas></div>
+    </div>
+    <div class="panel">
+      <h3 style="margin-bottom:4px">Retorno do investimento</h3>
+      <p class="note" style="margin-top:0">Saldo acumulado: investimento de R$ 175 mil mais o lucro de cada mês. O saldo fica positivo no mês 28.</p>
+      <div class="chart-box tall"><canvas id="chPayback"></canvas></div>
+    </div>
+  </div>
+  <div class="panel" style="margin-top:24px">
+    <h3 style="margin-bottom:16px">Faturamento e lucro por ano</h3>
+    <div class="chart-box"><canvas id="chYears"></canvas></div>
+  </div>
+</section>
+
+<!-- SIMULADOR -->
+<section id="simulador">
+  <div class="sec-head">
+    <h2>Simulador mensal</h2>
+    <p class="lede">Ajuste volume, ticket médio e custos para ver o resultado, o ponto de equilíbrio e o prazo de retorno do investimento.</p>
+  </div>
+  <div class="sim">
+    <div class="panel">
+      <div class="btn-row">
+        <button class="btn" data-preset="a1">Ano 1</button>
+        <button class="btn" data-preset="a2">Ano 2</button>
+        <button class="btn" data-preset="a3">Ano 3</button>
+      </div>
+      <div class="field"><label for="sPed">Bolos por mês <output id="oPed"></output></label><input type="range" id="sPed" min="1" max="40" step="1"></div>
+      <div class="field"><label for="sTk">Ticket médio por bolo <output id="oTk"></output></label><input type="range" id="sTk" min="1000" max="10000" step="1"></div>
+      <div class="field"><label for="sVar">Custo variável (% da venda) <output id="oVar"></output></label><input type="range" id="sVar" min="20" max="60" step="1"></div>
+      <div class="inputs-grid">
+        <div class="field"><label for="sFix">Custos fixos (R$/mês)</label><input type="number" id="sFix" min="0" step="100"></div>
+        <div class="field"><label for="sInv">Investimento (R$)</label><input type="number" id="sInv" min="0" step="1000"></div>
+        <div class="field"><label for="sTax">Impostos (%)</label><input type="number" id="sTax" min="0" max="40" step="0.5"></div>
+        <div class="field"><label for="sExtra">Complementares (R$/mês)</label><input type="number" id="sExtra" min="0" step="500"></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="out-grid num">
+        <div class="out"><span>Faturamento</span><strong id="rFat"></strong></div>
+        <div class="out"><span>Margem de contribuição</span><strong id="rMc"></strong></div>
+        <div class="out"><span>Lucro líquido</span><strong id="rLiq"></strong></div>
+        <div class="out"><span>Margem de lucro</span><strong id="rMarg"></strong></div>
+        <div class="out"><span>Ponto de equilíbrio</span><strong id="rPe"></strong></div>
+        <div class="out"><span>Retorno do investimento</span><strong id="rPay"></strong></div>
+      </div>
+      <div class="verdict" id="rVerdict"></div>
+      <div class="chart-box" style="height:230px;margin-top:20px"><canvas id="chSim"></canvas></div>
+    </div>
+  </div>
+  <p class="note">O retorno considera o lucro deste mês repetido todo mês. O percentual real de impostos deve ser definido por um contador.</p>
+</section>
+
+<!-- CALCULADORA -->
+<section id="projeto">
+  <div class="sec-head">
+    <h2>Calculadora de projeto</h2>
+    <p class="lede">A ficha financeira de cada bolo. Um bolo de R$ 8.000 pode render menos que um de R$ 4.000 se consumir o triplo do tempo, por isso o resultado por hora importa.</p>
+  </div>
+  <div class="sim">
+    <div class="panel">
+      <div class="inputs-grid">
+        <div class="field"><label for="pPreco">Preço de venda</label><input type="number" id="pPreco" value="4500" min="0" step="50"></div>
+        <div class="field"><label for="pHoras">Horas de produção</label><input type="number" id="pHoras" value="30" min="1" step="1"></div>
+        <div class="field"><label for="pIng">Ingredientes</label><input type="number" id="pIng" value="650" min="0" step="10"></div>
+        <div class="field"><label for="pMat">Materiais artísticos</label><input type="number" id="pMat" value="350" min="0" step="10"></div>
+        <div class="field"><label for="pEmb">Embalagem</label><input type="number" id="pEmb" value="120" min="0" step="10"></div>
+        <div class="field"><label for="pTrans">Transporte e montagem</label><input type="number" id="pTrans" value="250" min="0" step="10"></div>
+        <div class="field"><label for="pTaxa">Taxa de cartão (%)</label><input type="number" id="pTaxa" value="4" min="0" max="20" step="0.5"></div>
+        <div class="field"><label for="pImp">Impostos (%)</label><input type="number" id="pImp" value="7" min="0" max="40" step="0.5"></div>
+        <div class="field"><label for="pFixo">Parcela dos custos fixos</label><input type="number" id="pFixo" value="1698" min="0" step="10"></div>
+        <div class="field"><label for="pMeta">Meta de lucro por hora</label><input type="number" id="pMeta" value="30" min="0" step="5"></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="out-grid num">
+        <div class="out"><span>Custo total</span><strong id="qCusto"></strong></div>
+        <div class="out"><span>Lucro</span><strong id="qRes"></strong></div>
+        <div class="out"><span>Margem</span><strong id="qMarg"></strong></div>
+        <div class="out"><span>Lucro por hora</span><strong id="qHora"></strong></div>
+      </div>
+      <div class="verdict" id="qVerdict"></div>
+      <p class="note">Preço mínimo para atingir a meta por hora: <b id="qMin" class="num"></b></p>
+    </div>
+  </div>
+</section>
+
+<!-- CAIXA -->
+<section id="caixa">
+  <div class="sec-head">
+    <h2>Fluxo de caixa e pagamentos</h2>
+    <p class="lede">A política de pagamento evita que o ateliê financie a produção do casamento com recursos próprios.</p>
+  </div>
+  <div class="panel">
+    <div class="steps">
+      <div class="step"><div class="dot">1</div><div class="pct num">40%</div><b>Na contratação</b><p>Sinal que reserva a data e cobre compras iniciais.</p></div>
+      <div class="step"><div class="dot">2</div><div class="pct num">40%</div><b>Até 30 dias antes</b><p>Cobre ingredientes, materiais e produção.</p></div>
+      <div class="step"><div class="dot">3</div><div class="pct num">20%</div><b>Até 7 dias antes</b><p>Quitação antes da entrega e montagem.</p></div>
+    </div>
+    <div class="paybar" aria-hidden="true"><i></i><i></i><i></i></div>
+    <p class="note" style="margin:0">Exemplo para um bolo de R$ 4.500: R$ 1.800 + R$ 1.800 + R$ 900.</p>
+  </div>
+  <div class="grid-2" style="margin-top:24px">
+    <div class="panel">
+      <h3 style="margin-bottom:12px">Reserva de capital de giro</h3>
+      <div class="dre num">
+        <div class="dre-row"><span>Custos fixos mensais no ano 1</span><span>R$ 21.600</span></div>
+        <div class="dre-row"><span>× 3 meses</span><span>R$ 64.800</span></div>
+        <div class="dre-row result"><span>Reserva no investimento</span><span class="v">R$ 65.000</span></div>
+      </div>
+      <p class="note">A reserva também cobre cancelamentos, reembolsos e meses de baixa demanda.</p>
+    </div>
+    <div class="panel">
+      <h3 style="margin-bottom:12px">Acompanhamento semanal</h3>
+      <div class="grid-2" style="gap:20px">
+        <div><b class="pos">Entradas</b><ul style="padding-left:18px;color:var(--ink-2);font-size:.93rem;margin:8px 0 0"><li>Sinais de novos contratos</li><li>Parcelas de contratos</li><li>Serviços adicionais</li><li>Produtos complementares</li></ul></div>
+        <div><b class="neg">Saídas</b><ul style="padding-left:18px;color:var(--ink-2);font-size:.93rem;margin:8px 0 0"><li>Ingredientes e materiais</li><li>Salários e aluguel</li><li>Impostos e taxas</li><li>Transporte e manutenção</li></ul></div>
+      </div>
+      <p class="note">Conta da empresa sempre separada da conta pessoal das sócias.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  Bodas de Bolo: plano financeiro. Empresa fictícia criada para o Projeto Final de Empreendedorismo. Os valores são estimativas hipotéticas de planejamento.
+</footer>
+
+<script>
+const BRL = v => (v<0?'−':'') + 'R$ ' + Math.abs(Math.round(v)).toLocaleString('pt-BR');
+const BRLk = v => (v<0?'−':'') + 'R$ ' + (Math.abs(v)/1000).toLocaleString('pt-BR',{maximumFractionDigits:1}) + ' mil';
+const pct = v => (v*100).toLocaleString('pt-BR',{maximumFractionDigits:1}) + '%';
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const $ = id => document.getElementById(id);
+
+const invest = [
+  ['Capital de giro (3 meses de custos fixos)',65000,'Capital de giro'],
+  ['Reforma e adequação do espaço',20000,'Estrutura'],['Fornos profissionais',18000,'Equipamentos'],
+  ['Geladeiras e freezers',12000,'Equipamentos'],['Batedeiras profissionais',8000,'Equipamentos'],
+  ['Bancadas e mobiliário',8000,'Estrutura'],['Estoque inicial de matérias-primas',8000,'Operação inicial'],
+  ['Utensílios de confeitaria',7000,'Equipamentos'],['Equipamentos para escultura/modelagem',6000,'Equipamentos'],
+  ['Identidade visual e materiais de marca',5000,'Marca e vendas'],['Computador/software',4000,'Marca e vendas'],
+  ['Site e materiais comerciais',4000,'Marca e vendas'],['Embalagens e materiais de transporte',4000,'Operação inicial'],
+  ['Equipamentos de fotografia',3000,'Marca e vendas'],['Licenças, documentação e taxas',3000,'Operação inicial']
+];
+const fixos = [
+  ['Equipe (salários, pró-labore e encargos)',11750,19175,25500],['Aluguel',3500,5000,5000],['Energia elétrica',1500,2000,2000],
+  ['Marketing',2000,2000,2000],['Contabilidade',600,600,600],['Limpeza e manutenção',600,600,600],['Despesas administrativas',500,500,500],
+  ['Água',400,400,400],['Seguros',300,300,300],['Internet e telefone',250,250,250],['Sistema de gestão',200,200,200]
+];
+const variaveis = [
+  ['Farinha de trigo','1 kg','R$ 5 a R$ 8'],['Açúcar','1 kg','R$ 4,50 a R$ 7'],['Ovos','12 unidades','R$ 10 a R$ 16'],
+  ['Chocolate','1 kg','R$ 30 a R$ 70'],['Creme de leite','200 g','R$ 3,50 a R$ 6'],['Leite condensado','395 g','R$ 6 a R$ 10'],
+  ['Manteiga','200 g','R$ 8 a R$ 14'],['Frutas','1 kg','R$ 8 a R$ 25'],['Recheios','1 kg','R$ 20 a R$ 50'],
+  ['Pasta americana','1 kg','R$ 25 a R$ 45'],['Corantes','10 g','R$ 4 a R$ 10'],['Materiais de modelagem','kit','R$ 10 a R$ 50'],
+  ['Flores comestíveis','kit','R$ 10 a R$ 40'],['Bases e suportes','unidade','R$ 10 a R$ 80'],
+  ['Embalagens','unidade','R$ 2 a R$ 15'],['Caixas','unidade','R$ 5 a R$ 30'],['Frete','entrega','R$ 15 a R$ 100'],
+  ['Montagem no local','evento','R$ 100 a R$ 500'],['Taxa de cartão','% da venda','2% a 5%'],['Comissão de parceiros','% da venda','10%']
+];
+const preco = [['Ingredientes',650],['Materiais artísticos',350],['Embalagem',120],['Transporte/montagem',250],
+  ['Taxa de cartão (4%)',180],['Impostos (7%)',315],['Parcela dos custos fixos',1698]];
+const PRECO_VENDA = 4500;
+const linhas = [
+  ['Clássico','R$ 1.500 a 2.500','Decoração elegante, com pouca ou nenhuma escultura.',1],
+  ['Personalizado','R$ 2.500 a 4.500','Criado a partir da identidade visual do casamento.',2],
+  ['Artístico','R$ 4.000 a 7.000','Flores, pintura à mão e modelagens tridimensionais.',3],
+  ['Escultural','R$ 6.000 a 12.000','Esculturas, estruturas internas e personagens.',4]
+];
+const anos = [
+  {n:'Ano 1',ped:12,fat:39000,imp:.06,fix:21600,mix:'6 clássicos, 4 personalizados, 2 artísticos'},
+  {n:'Ano 2',ped:18,fat:70000,imp:.07,fix:31025,mix:'6 clássicos, 7 personalizados, 4 artísticos, 1 escultural'},
+  {n:'Ano 3',ped:22,fat:87000,imp:.07,fix:37350,mix:'8 clássicos, 8 personalizados, 4 artísticos, 2 esculturais'}
+].map(a=>{a.var=a.fat*.35;a.tx=a.fat*a.imp;a.luc=a.fat-a.var-a.tx-a.fix;return a;});
+const INV=175000;
+
+(function(){
+  const tiers=[['Complementares',5000,'--tier-5'],['Esculturais',16000,'--tier-4'],['Clássicos',16000,'--tier-3'],['Artísticos',22000,'--tier-2'],['Personalizados',28000,'--tier-1']];
+  const wrap=$('cakeTiers');
+  tiers.forEach((t,i)=>{const d=document.createElement('div');d.className='tier'+((i===1||i===2)?' light':'');
+    d.style.cssText=`width:${34+(t[1]/28000)*66}%;height:${44+i*6}px;background:var(${t[2]});animation-delay:${(4-i)*0.12}s`;
+    d.innerHTML=`<span>${t[0]}</span><b class="num">${BRLk(t[1])}</b>`;wrap.appendChild(d);});
+
+  const tb=$('tblInvest').tBodies[0], mx=65000;
+  invest.forEach(r=>tb.insertAdjacentHTML('beforeend',`<tr><td>${r[0]}</td><td class="r num">${BRL(r[1])}</td><td class="bar-cell"><div class="mini-bar"><i style="width:${r[1]/mx*100}%"></i></div></td></tr>`));
+  tb.insertAdjacentHTML('beforeend',`<tr class="total"><td>Total</td><td class="r num">${BRL(invest.reduce((s,r)=>s+r[1],0))}</td><td></td></tr>`);
+
+  const tf=$('tblFixos').tBodies[0];
+  fixos.forEach(r=>tf.insertAdjacentHTML('beforeend',`<tr><td>${r[0]}</td><td class="r">${BRL(r[1])}</td><td class="r">${BRL(r[2])}</td><td class="r">${BRL(r[3])}</td></tr>`));
+  const sum=k=>fixos.reduce((s,r)=>s+r[k],0);
+  tf.insertAdjacentHTML('beforeend',`<tr class="total"><td>Total mensal</td><td class="r">${BRL(sum(1))}</td><td class="r">${BRL(sum(2))}</td><td class="r">${BRL(sum(3))}</td></tr>`);
+  tf.insertAdjacentHTML('beforeend',`<tr><td>Pessoas na equipe</td><td class="r">3</td><td class="r">5</td><td class="r">6</td></tr>`);
+
+  const tv=$('tblVar').tBodies[0];
+  variaveis.forEach(r=>tv.insertAdjacentHTML('beforeend',`<tr><td>${r[0]}</td><td>${r[1]}</td><td class="r num">${r[2]}</td></tr>`));
+
+  const tp=$('tblPreco').tBodies[0], ct=preco.reduce((s,r)=>s+r[1],0);
+  preco.forEach(r=>tp.insertAdjacentHTML('beforeend',`<tr><td>${r[0]}</td><td class="r num">${BRL(r[1])}</td><td class="r num">${pct(r[1]/PRECO_VENDA)}</td></tr>`));
+  tp.insertAdjacentHTML('beforeend',`<tr><td><b>Custo total</b></td><td class="r num"><b>${BRL(ct)}</b></td><td class="r num">${pct(ct/PRECO_VENDA)}</td></tr>`);
+  tp.insertAdjacentHTML('beforeend',`<tr class="total"><td>Lucro do bolo</td><td class="r num pos">${BRL(PRECO_VENDA-ct)}</td><td class="r num">${pct((PRECO_VENDA-ct)/PRECO_VENDA)}</td></tr>`);
+
+  const L=$('lines');
+  linhas.forEach(l=>{const bars=[1,2,3,4].map(n=>`<i class="${n<=l[3]?'on':''}"></i>`).join('');
+    L.insertAdjacentHTML('beforeend',`<article class="line-card"><h3>${l[0]}</h3><div class="range num">${l[1]}</div><p>${l[2]}</p><div class="complexity" aria-label="Complexidade ${l[3]} de 4">${bars}</div><span class="complexity-label">Complexidade artística</span></article>`);});
+
+  const Y=$('yearCards');
+  anos.forEach(a=>{const mc=1-.35-a.imp;
+    Y.insertAdjacentHTML('beforeend',`<article class="scen"><span class="tag" style="background:var(--rose-soft);color:var(--rose)">${a.n}</span>
+    <div class="big num">${BRL(a.luc*12)}<span style="font-size:1rem;font-family:var(--body);color:var(--ink-2)"> de lucro no ano</span></div>
+    <p class="note" style="margin:8px 0 0">${a.ped} bolos por mês: ${a.mix}.</p>
+    <dl class="num"><dt>Faturamento mensal</dt><dd>${BRL(a.fat)}</dd><dt>Impostos (${Math.round(a.imp*100)}%)</dt><dd>${BRL(a.tx)}</dd>
+    <dt>Custos variáveis</dt><dd>${BRL(a.var)}</dd><dt>Custos fixos</dt><dd>${BRL(a.fix)}</dd>
+    <dt>Lucro mensal</dt><dd class="pos">${BRL(a.luc)}</dd><dt>Margem de lucro</dt><dd>${pct(a.luc/a.fat)}</dd>
+    <dt>Ponto de equilíbrio</dt><dd>${BRL(a.fix/mc)}</dd></dl></article>`);});
+})();
+
+const charts={};
+function P(){return {ink:css('--ink'),ink2:css('--ink-2'),line:css('--line'),rose:css('--rose'),sage:css('--sage'),gold:css('--gold'),danger:css('--danger'),
+  tiers:[css('--tier-1'),css('--tier-2'),css('--tier-3'),css('--tier-4'),css('--tier-5')],surface:css('--surface')};}
+function buildCharts(){
+  Object.values(charts).forEach(c=>c.destroy());
+  const p=P(); Chart.defaults.font.family=css('--body'); Chart.defaults.color=p.ink2; Chart.defaults.borderColor=p.line;
+  const yk={ticks:{callback:v=>BRLk(v)},grid:{color:p.line}}, xg={grid:{display:false}};
+
+  const g={}; invest.forEach(r=>g[r[2]]=(g[r[2]]||0)+r[1]);
+  charts.inv=new Chart($('chInvest'),{type:'doughnut',data:{labels:Object.keys(g),datasets:[{data:Object.values(g),backgroundColor:p.tiers,borderColor:p.surface,borderWidth:3}]},
+    options:{maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'bottom',labels:{boxWidth:12,padding:14}},tooltip:{callbacks:{label:c=>` ${c.label}: ${BRL(c.parsed)} (${pct(c.parsed/INV)})`}}}}});
+
+  const f3=fixos.slice().sort((a,b)=>b[3]-a[3]);
+  charts.fix=new Chart($('chFixos'),{type:'bar',data:{labels:f3.map(r=>r[0].replace(' (salários, pró-labore e encargos)','')),datasets:[{data:f3.map(r=>r[3]),backgroundColor:p.rose,borderRadius:6,barThickness:16}]},
+    options:{indexAxis:'y',maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+BRL(c.parsed.x)}}},scales:{x:yk,y:xg}}});
+
+  const res=PRECO_VENDA-preco.reduce((s,r)=>s+r[1],0);
+  const pc=[p.tiers[0],p.tiers[1],p.tiers[2],p.tiers[3],p.gold,p.danger,p.ink2];
+  charts.preco=new Chart($('chPreco'),{type:'bar',data:{labels:['R$ 4.500'],datasets:[...preco.map((r,i)=>({label:r[0],data:[r[1]],backgroundColor:pc[i]})),{label:'Lucro',data:[res],backgroundColor:p.sage}]},
+    options:{indexAxis:'y',maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:12,padding:12}},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${BRL(c.parsed.x)}`}}},scales:{x:{stacked:true,max:4500,ticks:{callback:v=>BRLk(v)}},y:{stacked:true,display:false}}}});
+
+  const a3=anos[2];
+  charts.water=new Chart($('chWater'),{type:'bar',data:{labels:['Faturamento','Impostos','Variáveis','Fixos','Lucro'],datasets:[{data:[[0,87000],[80910,87000],[50460,80910],[13110,50460],[0,13110]],backgroundColor:[p.ink2,p.danger,p.gold,p.tiers[1],p.sage],borderRadius:6}]},
+    options:{maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+BRL(c.raw[1]-c.raw[0])}}},scales:{y:yk,x:xg}}});
+
+  const months=[...Array(37).keys()], saldo=[]; let acc=-INV;
+  months.forEach(m=>{ if(m>0) acc+=anos[Math.min(2,Math.floor((m-1)/12))].luc; saldo.push(Math.round(acc)); });
+  charts.pay=new Chart($('chPayback'),{type:'line',data:{labels:months.map(m=>m===0?'Início':'Mês '+m),datasets:[
+    {label:'Saldo acumulado',data:saldo,borderColor:p.rose,backgroundColor:p.rose,borderWidth:2.5,tension:.15,pointRadius:months.map(m=>m===28?6:0),segment:{borderColor:c=>c.p1.parsed.y<0?p.danger:p.sage}},
+    {label:'Zero',data:months.map(()=>0),borderColor:p.ink2,borderDash:[4,4],borderWidth:1,pointRadius:0}]},
+    options:{maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+BRL(c.parsed.y)}}},scales:{y:yk,x:{grid:{display:false},ticks:{maxTicksLimit:7}}}}});
+
+  charts.years=new Chart($('chYears'),{type:'bar',data:{labels:anos.map(a=>a.n),datasets:[
+    {label:'Faturamento anual',data:anos.map(a=>a.fat*12),backgroundColor:p.tiers[2],borderRadius:8},
+    {label:'Lucro anual',data:anos.map(a=>a.luc*12),backgroundColor:p.tiers[0],borderRadius:8}]},
+    options:{maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:12}},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${BRL(c.parsed.y)}`}}},scales:{y:yk,x:xg}}});
+
+  charts.sim=new Chart($('chSim'),{type:'line',data:{labels:[],datasets:[
+    {label:'Lucro',data:[],borderColor:p.rose,backgroundColor:p.rose,pointRadius:0,borderWidth:2.5,tension:.2},
+    {label:'Zero',data:[],borderColor:p.ink2,borderDash:[4,4],borderWidth:1,pointRadius:0}]},
+    options:{maintainAspectRatio:false,animation:false,plugins:{legend:{display:false},tooltip:{callbacks:{title:c=>c[0].label+' bolos',label:c=>' '+BRL(c.parsed.y)}}},
+      scales:{y:yk,x:{title:{display:true,text:'Bolos por mês'},grid:{display:false},ticks:{maxTicksLimit:10}}}}});
+  runSim();
+}
+
+const presets={a1:{ped:12,tk:3083,extra:2000,fix:21600,tax:6},a2:{ped:18,tk:3694,extra:3500,fix:31025,tax:7},a3:{ped:22,tk:3727,extra:5000,fix:37350,tax:7}};
+const SKEY='bodas-sim-v2';
+function setSim(o){$('sPed').value=o.ped;$('sTk').value=o.tk;$('sVar').value=o.vr??35;$('sFix').value=o.fix;$('sInv').value=o.inv??INV;$('sTax').value=o.tax;$('sExtra').value=o.extra;}
+function loadSim(){let s=null;try{s=JSON.parse(localStorage.getItem(SKEY));}catch(e){} setSim(s||presets.a3);}
+function runSim(){
+  const ped=+$('sPed').value,tk=+$('sTk').value,vr=+$('sVar').value/100,fix=+$('sFix').value||0,inv=+$('sInv').value||0,tax=(+$('sTax').value||0)/100,extra=+$('sExtra').value||0;
+  $('oPed').textContent=ped;$('oTk').textContent=BRL(tk);$('oVar').textContent=Math.round(vr*100)+'%';
+  const fat=ped*tk+extra, mcR=1-vr-tax, mc=fat*mcR, liq=mc-fix;
+  const pe=mcR>0?fix/mcR:Infinity, pedPE=mcR>0?Math.max(0,Math.ceil((fix-extra*mcR)/(tk*mcR))):Infinity;
+  $('rFat').textContent=BRL(fat);$('rMc').textContent=BRL(mc);
+  $('rLiq').textContent=BRL(liq);$('rLiq').className=liq>=0?'pos':'neg';
+  $('rMarg').textContent=fat?pct(liq/fat):'—';
+  $('rPe').textContent=isFinite(pe)?BRL(pe):'—';
+  $('rPay').textContent=liq>0?(inv/liq).toLocaleString('pt-BR',{maximumFractionDigits:1})+' meses':'sem retorno';
+  const v=$('rVerdict');
+  if(liq<0){v.style.background='var(--danger-soft)';v.style.color='var(--danger)';v.textContent=`Abaixo do ponto de equilíbrio. São necessários pelo menos ${pedPE} bolos por mês com este ticket.`;}
+  else if(liq/fat<.1){v.style.background='var(--gold-soft)';v.style.color='var(--ink)';v.textContent=`Lucro positivo, mas com margem estreita (${pct(liq/fat)}). Pouco espaço para imprevistos.`;}
+  else{v.style.background='var(--sage-soft)';v.style.color='var(--ink)';v.textContent=`Operação saudável: margem de lucro de ${pct(liq/fat)}, ${ped-pedPE} bolos acima do ponto de equilíbrio.`;}
+  if(charts.sim){const xs=[...Array(40).keys()].map(i=>i+1);charts.sim.data.labels=xs;
+    charts.sim.data.datasets[0].data=xs.map(n=>(n*tk+extra)*mcR-fix);charts.sim.data.datasets[1].data=xs.map(()=>0);
+    charts.sim.data.datasets[0].pointRadius=xs.map(n=>n===ped?6:0);charts.sim.update();}
+  try{localStorage.setItem(SKEY,JSON.stringify({ped,tk,vr:Math.round(vr*100),fix,inv,tax:tax*100,extra}));}catch(e){}
+}
+['sPed','sTk','sVar','sFix','sInv','sTax','sExtra'].forEach(id=>$(id).addEventListener('input',runSim));
+document.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>{setSim(Object.assign({vr:35,inv:INV},presets[b.dataset.preset]));runSim();}));
+
+function runProj(){
+  const g=id=>+$(id).value||0;
+  const preco=g('pPreco'),h=Math.max(1,g('pHoras')),pctV=(g('pTaxa')+g('pImp'))/100,meta=g('pMeta');
+  const base=g('pIng')+g('pMat')+g('pEmb')+g('pTrans')+g('pFixo');
+  const custo=base+preco*pctV,res=preco-custo,hora=res/h;
+  $('qCusto').textContent=BRL(custo);$('qRes').textContent=BRL(res);$('qRes').className=res>=0?'pos':'neg';
+  $('qMarg').textContent=preco?pct(res/preco):'—';$('qHora').textContent=BRL(hora);$('qHora').className=hora>=meta?'pos':'neg';
+  const minP=(base+meta*h)/(1-pctV);$('qMin').textContent=BRL(minP);
+  const v=$('qVerdict');
+  if(res<0){v.style.background='var(--danger-soft)';v.style.color='var(--danger)';v.textContent='Projeto com prejuízo. Revise o preço ou reduza horas e materiais.';}
+  else if(hora<meta){v.style.background='var(--gold-soft)';v.style.color='var(--ink)';v.textContent=`Abaixo da meta por hora. O preço deveria ser de pelo menos ${BRL(minP)}.`;}
+  else{v.style.background='var(--sage-soft)';v.style.color='var(--ink)';v.textContent=`Projeto rentável: ${BRL(hora)} de lucro por hora, acima da meta de ${BRL(meta)}.`;}
+}
+['pPreco','pHoras','pIng','pMat','pEmb','pTrans','pTaxa','pImp','pFixo','pMeta'].forEach(id=>$(id).addEventListener('input',runProj));
+
+const TKEY='bodas-theme';
+try{const t=localStorage.getItem(TKEY);if(t)document.documentElement.dataset.theme=t;}catch(e){}
+$('themeBtn').addEventListener('click',()=>{const cur=document.documentElement.dataset.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+  const nx=cur==='dark'?'light':'dark';document.documentElement.dataset.theme=nx;try{localStorage.setItem(TKEY,nx);}catch(e){}buildCharts();});
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if(!document.documentElement.dataset.theme)buildCharts();});
+
+loadSim();runProj();
+if(window.Chart){buildCharts();}else{runSim();}
+</script>
+</body>
+</html>
